@@ -12,27 +12,27 @@ namespace ParamUtilsTests
 		[ExpectedException(typeof(ConfigurationErrorsException))]
 		public void TestCaseMissingParam ()
 		{
-			Params.GetParameter<string> ("randomParameter");
+			Params.Instance.GetParameter<string> ("randomParameter");
 		}
 
 		[Test, Category("string")]
 		public void TestCaseString ()
 		{
-			var testStr = Params.GetParameter<string> ("stringTest");
+			var testStr = Params.Instance.GetParameter<string> ("stringTest");
 			Assert.AreEqual ("blah", testStr);
 		}
 
 		[Test, Category("bool")]
 		public void TestCaseBoolTrue ()
 		{
-			var testBool = Params.GetParameter<bool> ("boolTrueTest");
+			var testBool = Params.Instance.GetParameter<bool> ("boolTrueTest");
 			Assert.AreEqual (true, testBool);
 		}
 
 		[Test, Category("bool")]
 		public void TestCaseBoolFalse ()
 		{
-			var testBool = Params.GetParameter<bool> ("boolFalseTest");
+			var testBool = Params.Instance.GetParameter<bool> ("boolFalseTest");
 			Assert.AreEqual (false, testBool);
 		}
 
@@ -40,13 +40,13 @@ namespace ParamUtilsTests
 		[ExpectedException(typeof(ConfigurationErrorsException))]
 		public void TestCaseBoolBad ()
 		{
-			Params.GetParameter<bool> ("boolBadTest");
+			Params.Instance.GetParameter<bool> ("boolBadTest");
 		}
 
 		[Test, Category("int32")]
 		public void TestCaseInt ()
 		{
-			var testInt = Params.GetParameter<int> ("intTest");
+			var testInt = Params.Instance.GetParameter<int> ("intTest");
 			Assert.AreEqual (11, testInt);
 		}
 
@@ -54,13 +54,13 @@ namespace ParamUtilsTests
 		[ExpectedException(typeof(ConfigurationErrorsException))]
 		public void TestCaseBadInt ()
 		{
-			Params.GetParameter<int> ("intBadTest");
+			Params.Instance.GetParameter<int> ("intBadTest");
 		}
 
 		[Test, Category("int64")]
 		public void TestCaseInt64 ()
 		{
-			var testInt = Params.GetParameter<Int64> ("int64Test");
+			var testInt = Params.Instance.GetParameter<Int64> ("int64Test");
 			Assert.AreEqual (12, testInt);
 		}
 
@@ -68,7 +68,7 @@ namespace ParamUtilsTests
 		[ExpectedException(typeof(ConfigurationErrorsException))]
 		public void TestCaseBadInt64 ()
 		{
-			Params.GetParameter<int> ("int64BadTest");
+			Params.Instance.GetParameter<int> ("int64BadTest");
 		}
 	}
 }

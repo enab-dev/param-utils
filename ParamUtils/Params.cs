@@ -4,24 +4,47 @@ using System.Configuration;
 
 namespace ParamUtils
 {
-	public static class Params
+	public sealed class Params
 	{
+		#region singleton pattern implementation with thread safety
+
+		private static volatile Params _instance;
+		private static object _syncRoot = new object();
+
+		private Params() { }
+
+		public static Params Instance
+		{
+			get 
+			{
+				if (_instance == null) 
+				{
+					lock (_syncRoot) 
+					{
+						if (_instance == null) { _instance = new Params (); }
+					}
+				}
+				return _instance;
+			}
+		}
+
+		#endregion
 		#region bad parameter handling
 
 		private enum BadParamType { Missing, WrongType };
-		private static readonly Dictionary<BadParamType, string> BadParamTemplates = new Dictionary<BadParamType, string> () {
+		private readonly Dictionary<BadParamType, string> BadParamTemplates = new Dictionary<BadParamType, string> () {
 			{ BadParamType.Missing, "No configuration entry found for key {0}! Please add an entry of type {1}." },
 			{ BadParamType.WrongType, "Configuration setting under key {0} is not of the type {1}!" }
 		};
 
-		private static T HandleBadParameter<T> (string key, BadParamType errorType)
+		private T HandleBadParameter<T> (string key, BadParamType errorType)
 		{
 			throw new ConfigurationErrorsException(string.Format(BadParamTemplates[errorType], key, typeof(T).ToString ()));
 		}
 
 		#endregion
 
-		public static T GetParameter<T> (string settingKey)
+		public T GetParameter<T> (string settingKey)
 		{
 			var settingValue = ConfigurationManager.AppSettings[settingKey];
 
@@ -62,7 +85,7 @@ namespace ParamUtils
 			return HandleBadParameter<T> (settingKey, BadParamType.WrongType);
 		}
 
-		private static T CastStringToType<T> (string settingValue)
+		private T CastStringToType<T> (string settingValue)
 		{
 			return (T)Convert.ChangeType(settingValue, typeof(T));
 		}
