@@ -4,32 +4,16 @@ using System.Configuration;
 
 namespace ParamUtils
 {
-	public sealed class Params
+	/// <summary>
+	/// A utility class for reading in configuration settings cast as their intended type. Extends thread-safe singleton
+	/// implementation and throws an error if the specified configuration entry is missing or is of the wrong type. Handles
+	/// string, bool, int32 and int64 types.
+	/// </summary>
+	public class Params : SingletonBase<Params>
 	{
-		#region singleton pattern implementation with thread safety
-
-		private static volatile Params _instance;
-		private static object _syncRoot = new object();
-
 		private Params() { }
 
-		public static Params Instance
-		{
-			get 
-			{
-				if (_instance == null) 
-				{
-					lock (_syncRoot) 
-					{
-						if (_instance == null) { _instance = new Params (); }
-					}
-				}
-				return _instance;
-			}
-		}
-
-		#endregion
-		#region bad parameter handling
+		#region Error Handling
 
 		private enum BadParamType { Missing, WrongType };
 		private readonly Dictionary<BadParamType, string> BadParamTemplates = new Dictionary<BadParamType, string> () {
@@ -44,6 +28,12 @@ namespace ParamUtils
 
 		#endregion
 
+		/// <summary>
+		/// Gets the parameter specified by settingKey and returns it as type T.
+		/// </summary>
+		/// <returns>Parameter value</returns>
+		/// <param name="settingKey">Configuration key</param>
+		/// <typeparam name="T">Parameter type</typeparam>
 		public T GetParameter<T> (string settingKey)
 		{
 			var settingValue = ConfigurationManager.AppSettings[settingKey];
